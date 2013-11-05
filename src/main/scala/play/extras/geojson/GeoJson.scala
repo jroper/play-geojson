@@ -171,13 +171,13 @@ object Feature {
 sealed trait Crs
 
 object Crs {
+  import GeoFormats._
+
   implicit val crsFormat: Format[Crs] = Format(
-    Reads { json =>
-      (json \ "type").asOpt[String] match {
-        case Some("name") => NamedCrs.namedCrsFormat.reads(json)
-        case Some("link") => LinkedCrs.linkedCrsFormat.reads(json)
-        case _ => JsError("Not a CRS")
-      }
+    readType.flatMap {
+      case "name" => NamedCrs.namedCrsFormat
+      case "link" => LinkedCrs.linkedCrsFormat
+      case unknown => errorReads("Unknown CRS descriptor type: " + unknown)
     },
     Writes {
       case named: NamedCrs => NamedCrs.namedCrsFormat.writes(named)
@@ -290,12 +290,17 @@ private object GeoFormats {
   import ExtendedWrites._
 
   /**
+   * Reads the GeoJSON type property.
+   */
+  def readType: Reads[String] = (__ \ "type").read[String]
+  
+  /**
    * Reads a GeoJSON type property with the given type.
    *
    * If the type is not the given name, a validation error is thrown.
    */
-  def readType(geoJsonType: String): Reads[String] =
-    (__ \ "type").read[String].filter(new ValidationError("Geometry is not a " + geoJsonType))(_ == geoJsonType)
+  def filterType(geoJsonType: String): Reads[String] =
+    readType.filter(new ValidationError("Geometry is not a " + geoJsonType))(_ == geoJsonType)
 
   /**
    * Writes for the GeoJSON type property for the given type.
@@ -328,7 +333,7 @@ private object GeoFormats {
    * Create a GeoJSON format with the given type name.
    */
   def geoJsonFormatFor[G](geoJsonType: String, format: OFormat[G]): Format[G] = Format[G](
-    readType(geoJsonType) ~> format,
+    filterType(geoJsonType) ~> format,
     writeType(geoJsonType) ~~> format
   )
 
@@ -341,6 +346,13 @@ private object GeoFormats {
     geoJsonFormatFor(geoJsonType,
       ((__ \ "coordinates").format[T] ~ formatBbox[C]).apply(read, unlift(write))
     )
+
+  def errorReads[T](message: String) = Reads[T](_ => JsError(message))
+
+  /**
+   * Reads is invariant in its type parameter.  This function widens it.
+   */
+  implicit def widenReads[A, B >: A](reads: Reads[A]): Reads[B] = Reads[B](_.validate(reads))
 
   /*
    * Formats for each of the different GeoJSON types.  These are internal, they do not add a CRS property to the
@@ -393,18 +405,15 @@ private object GeoFormats {
   }
 
   def geometryFormat[C : Format]: Format[Geometry[C]] = Format(
-    Reads { json =>
-      (json \ "type").asOpt[String] match {
-        case Some("Point") => json.validate(pointFormat[C])
-        case Some("MultiPoint") => json.validate(multiPointFormat[C])
-        case Some("LineString") => json.validate(lineStringFormat[C])
-        case Some("MultiLineString") => json.validate(multiLineStringFormat[C])
-        case Some("Polygon") => json.validate(polygonFormat[C])
-        case Some("MultiPolygon") => json.validate(multiPolygonFormat[C])
-        case Some("GeometryCollection") => json.validate(geometryCollectionFormat[C])
-        case Some(unknown) => JsError("Unknown GeoJSON Geometry type: " + unknown)
-        case _ => JsError("Expected a GeoJSON object, but object has no type property")
-      }
+    readType.flatMap {
+      case "Point" => pointFormat[C]
+      case "MultiPoint" => multiPointFormat[C]
+      case "LineString" => lineStringFormat[C]
+      case "MultiLineString" => multiLineStringFormat[C]
+      case "Polygon" => polygonFormat[C]
+      case "MultiPolygon" => multiPolygonFormat[C]
+      case "GeometryCollection" => geometryCollectionFormat[C]
+      case unknown => errorReads("Unknown GeoJSON Geometry type: " + unknown)
     },
     Writes {
       case point: Point[C] => pointFormat[C].writes(point)
@@ -418,29 +427,15 @@ private object GeoFormats {
   )
 
   def geoJsonFormat[C: Format]: Format[GeoJson[C]] = Format(
-    Reads { json =>
-      (json \ "type").asOpt[String] match {
-        case Some("Point") => json.validate(pointFormat[C])
-        case Some("MultiPoint") => json.validate(multiPointFormat[C])
-        case Some("LineString") => json.validate(lineStringFormat[C])
-        case Some("MultiLineString") => json.validate(multiLineStringFormat[C])
-        case Some("Polygon") => json.validate(polygonFormat[C])
-        case Some("MultiPolygon") => json.validate(multiPolygonFormat[C])
-        case Some("GeometryCollection") => json.validate(geometryCollectionFormat[C])
-        case Some("Feature") => json.validate(featureFormat[C])
-        case Some("FeatureCollection") => json.validate(featureCollectionFormat[C])
-        case Some(unknown) => JsError("Unknown GeoJSON type: " + unknown)
-        case _ => JsError("Expected a GeoJSON object, but object has no type property")
-      }
-    },
+    (geometryFormat[C]: Reads[Geometry[C]]).or(
+      readType.flatMap {
+        case "Feature" => featureFormat[C]
+        case "FeatureCollection" => featureCollectionFormat[C]
+        case unknown => errorReads("Unknown GeoJSON type: " + unknown)
+      }: Reads[GeoJson[C]]
+    ),
     Writes {
-      case point: Point[C] => pointFormat[C].writes(point)
-      case multiPoint: MultiPoint[C] => multiPointFormat[C].writes(multiPoint)
-      case lineString: LineString[C] => lineStringFormat[C].writes(lineString)
-      case multiLineString: MultiLineString[C] => multiLineStringFormat[C].writes(multiLineString)
-      case polygon: Polygon[C] => polygonFormat[C].writes(polygon)
-      case multiPolygon: MultiPolygon[C] => multiPolygonFormat[C].writes(multiPolygon)
-      case geometryCollection: GeometryCollection[C] => geometryCollectionFormat[C].writes(geometryCollection)
+      case geometry: Geometry[C] => geometryFormat[C].writes(geometry)
       case feature: Feature[C] => featureFormat[C].writes(feature)
       case featureCollection: FeatureCollection[C] => featureCollectionFormat[C].writes(featureCollection)
     }

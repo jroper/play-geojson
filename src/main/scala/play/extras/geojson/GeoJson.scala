@@ -432,7 +432,7 @@ private object GeoFormats {
         case "Feature" => featureFormat[C]
         case "FeatureCollection" => featureCollectionFormat[C]
         case unknown => errorReads("Unknown GeoJSON type: " + unknown)
-      }: Reads[GeoJson[C]]
+      }
     ),
     Writes {
       case geometry: Geometry[C] => geometryFormat[C].writes(geometry)

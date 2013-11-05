@@ -2,7 +2,7 @@ organization := "com.typesafe.play.extras"
 
 name := "play-geojson"
 
-version := "1.0.0"
+version := "1.0.1-SNAPSHOT"
 
 scalaVersion := "2.10.3"
 

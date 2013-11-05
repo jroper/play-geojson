@@ -171,6 +171,22 @@ object GeoJsonSpec extends Specification {
       bboxAssertions(json, bbox => obj.copy(bbox = bbox))
     }
 
+    "fail gracefully for unknown geojson types" in {
+      Json.fromJson[GeoJson[LatLng]](Json.obj("type" -> "Foo")) must beAnInstanceOf[JsError]
+    }
+
+    "fail gracefully for unknown geojson geometry types" in {
+      Json.fromJson[Geometry[LatLng]](Json.obj("type" -> "Foo")) must beAnInstanceOf[JsError]
+    }
+
+    "fail gracefully if no geojson type attribute is specified" in {
+      Json.fromJson[GeoJson[LatLng]](Json.obj()) must beAnInstanceOf[JsError]
+    }
+
+    "fail gracefully if no geojson geometry type attribute is specified" in {
+      Json.fromJson[Geometry[LatLng]](Json.obj()) must beAnInstanceOf[JsError]
+    }
+
   }
 
 }

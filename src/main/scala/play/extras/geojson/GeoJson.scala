@@ -347,47 +347,52 @@ private object GeoFormats {
    * output.
    */
 
-  implicit def pointFormat[C : Format]: Format[Point[C]] =
+  def pointFormat[C : Format]: Format[Point[C]] =
     geometryFormatFor("Point", Point.apply, Point.unapply)
 
-  implicit def multiPointFormat[C : Format]: Format[MultiPoint[C]] =
+  def multiPointFormat[C : Format]: Format[MultiPoint[C]] =
     geometryFormatFor("MultiPoint", MultiPoint.apply, MultiPoint.unapply)
 
-  implicit def lineStringFormat[C : Format]: Format[LineString[C]] =
+  def lineStringFormat[C : Format]: Format[LineString[C]] =
     geometryFormatFor("LineString", LineString.apply, LineString.unapply)
 
-  implicit def multiLineStringFormat[C : Format]: Format[MultiLineString[C]] =
+  def multiLineStringFormat[C : Format]: Format[MultiLineString[C]] =
     geometryFormatFor("MultiLineString", MultiLineString.apply, MultiLineString.unapply)
 
-  implicit def polygonFormat[C : Format]: Format[Polygon[C]] =
+  def polygonFormat[C : Format]: Format[Polygon[C]] =
     geometryFormatFor("Polygon", Polygon.apply, Polygon.unapply)
 
-  implicit def multiPolygonFormat[C : Format]: Format[MultiPolygon[C]] =
+  def multiPolygonFormat[C : Format]: Format[MultiPolygon[C]] =
     geometryFormatFor("MultiPolygon", MultiPolygon.apply, MultiPolygon.unapply)
 
-  implicit def geometryCollectionFormat[C : Format]: Format[GeometryCollection[C]] =
+  def geometryCollectionFormat[C : Format]: Format[GeometryCollection[C]] = {
+    implicit val gf = geometryFormat[C]
     geoJsonFormatFor("GeometryCollection",
       ((__ \ "geometries").format[Seq[Geometry[C]]] ~ formatBbox[C])
         .apply(GeometryCollection.apply, unlift(GeometryCollection.unapply))
     )
+  }
 
-  implicit def featureFormat[C : Format]: Format[Feature[C]] =
+  def featureFormat[C : Format]: Format[Feature[C]] = {
     geoJsonFormatFor("Feature", (
-        (__ \ "geometry").format[Geometry[C]] ~
+        (__ \ "geometry").format(geometryFormat[C]) ~
         (__ \ "properties").formatNullable[JsObject] ~
         // The spec isn't clear on what the id can be
         (__ \ "id").formatNullable[JsValue] ~
         formatBbox[C]
       ).apply(Feature.apply, unlift(Feature.unapply))
     )
+  }
 
-  implicit def featureCollectionFormat[C : Format]: Format[FeatureCollection[C]] =
-    geoJsonFormatFor("FeatureCollection", 
+  def featureCollectionFormat[C : Format]: Format[FeatureCollection[C]] = {
+    implicit val ff = featureFormat[C]
+    geoJsonFormatFor("FeatureCollection",
       ((__ \ "features").format[Seq[Feature[C]]] ~ formatBbox[C])
         .apply(FeatureCollection.apply, unlift(FeatureCollection.unapply))
     )
+  }
 
-  implicit def geometryFormat[C : Format]: Format[Geometry[C]] = Format(
+  def geometryFormat[C : Format]: Format[Geometry[C]] = Format(
     Reads { json =>
       (json \ "type").asOpt[String] match {
         case Some("Point") => json.validate(pointFormat[C])
@@ -397,7 +402,8 @@ private object GeoFormats {
         case Some("Polygon") => json.validate(polygonFormat[C])
         case Some("MultiPolygon") => json.validate(multiPolygonFormat[C])
         case Some("GeometryCollection") => json.validate(geometryCollectionFormat[C])
-        case _ => JsError("Not a geometry")
+        case Some(unknown) => JsError("Unknown GeoJSON Geometry type: " + unknown)
+        case _ => JsError("Expected a GeoJSON object, but object has no type property")
       }
     },
     Writes {
@@ -423,7 +429,8 @@ private object GeoFormats {
         case Some("GeometryCollection") => json.validate(geometryCollectionFormat[C])
         case Some("Feature") => json.validate(featureFormat[C])
         case Some("FeatureCollection") => json.validate(featureCollectionFormat[C])
-        case _ => JsError("Not a geometry")
+        case Some(unknown) => JsError("Unknown GeoJSON type: " + unknown)
+        case _ => JsError("Expected a GeoJSON object, but object has no type property")
       }
     },
     Writes {

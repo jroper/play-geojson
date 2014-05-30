@@ -93,11 +93,11 @@ object MultiLineString {
 /**
  * A GeoJSON Polygon object.
  *
- * @param coordinates The sequence of corners in the polygon.
+ * @param coordinates A sequence of sequences of corners in the polygon.
  * @param bbox The bounding box for the polygon, if any.
  * @tparam C The object used to model the CRS that this GeoJSON object uses.
  */
-case class Polygon[C](coordinates: Seq[C], bbox: Option[(C, C)] = None) extends Geometry[C]
+case class Polygon[C](coordinates: Seq[Seq[C]], bbox: Option[(C, C)] = None) extends Geometry[C]
 
 object Polygon {
   implicit def polygonReads[C](implicit crs: CrsFormat[C]): Reads[Polygon[C]] =
@@ -111,7 +111,7 @@ object Polygon {
  * @param bbox The bounding box for the polygons, if any.
  * @tparam C The object used to model the CRS that this GeoJSON object uses.
  */
-case class MultiPolygon[C](coordinates: Seq[Seq[C]], bbox: Option[(C, C)] = None) extends Geometry[C]
+case class MultiPolygon[C](coordinates: Seq[Seq[Seq[C]]], bbox: Option[(C, C)] = None) extends Geometry[C]
 
 object MultiPolygon {
   implicit def multiPolygonReads[C](implicit crs: CrsFormat[C]): Reads[MultiPolygon[C]] =

@@ -2,13 +2,15 @@ organization := "com.typesafe.play.extras"
 
 name := "play-geojson"
 
-version := "1.0.1-SNAPSHOT"
+version := "1.1.0"
 
-scalaVersion := "2.10.3"
+scalaVersion := "2.11.1"
+
+crossScalaVersions := Seq("2.11.1", "2.10.4")
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play-json" % "2.2.1" % "provided",
-  "org.specs2" %% "specs2" % "2.3.1" %  "test"
+  "com.typesafe.play" %% "play-json" % "2.3.0-RC2" % "provided",
+  "org.specs2" %% "specs2" % "2.3.12" %  "test"
 )
 
 publishTo <<= (version) { version: String =>

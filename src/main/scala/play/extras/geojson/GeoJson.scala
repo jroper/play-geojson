@@ -212,19 +212,6 @@ object LinkedCrs {
 }
 
 /**
- * A latitude longitude CRS, for use with WGS84.
- *
- * @param lat The latitude.
- * @param lng The longitude.
- */
-case class LatLng(lat: Double, lng: Double)
-
-object LatLng {
-  implicit val latLngFormat: Format[LatLng] = Wgs84Format.format
-  implicit val latLngCrs: CrsFormat[LatLng] = Wgs84Format
-}
-
-/**
  * A CRS format
  */
 trait CrsFormat[C] {
@@ -245,19 +232,6 @@ trait CrsFormat[C] {
   def isDefault = false
 }
 
-/**
- * The WGS84 CRS format.
- */
-object Wgs84Format extends CrsFormat[LatLng] {
-  val crs = NamedCrs("urn:ogc:def:crs:OGC:1.3:CRS84")
-  val format = Format[LatLng](
-    __.read[Seq[Double]].map {
-      case Seq(lng, lat) => LatLng(lat, lng)
-    }, Writes(latLng => Json.arr(latLng.lng, latLng.lat))
-  )
-
-  override def isDefault = true
-}
 
 /**
  * These are the raw "internal" formats.  They do not add the CRS parameter when serialising.

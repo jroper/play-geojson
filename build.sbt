@@ -4,12 +4,12 @@ name := "play-geojson"
 
 version := "1.1.0"
 
-scalaVersion := "2.11.4"
+scalaVersion := "2.11.5"
 
-crossScalaVersions := Seq("2.11.4", "2.10.4")
+crossScalaVersions := Seq("2.11.5", "2.10.4")
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play-json" % "2.3.7" % "provided",
+  "com.typesafe.play" %% "play-json" % "2.3.8" % "provided",
   "org.specs2" %% "specs2" % "2.3.12" %  "test"
 )
 

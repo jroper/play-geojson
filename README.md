@@ -18,7 +18,7 @@ Since it is unofficial, don't expect any support, bug fixes or updates in any so
 Add the following dependency to `build.sbt`:
 
 ```scala
-"com.typesafe.play.extras" %% "play-geojson" % "1.1.0"
+"com.typesafe.play.extras" %% "play-geojson" % "1.2.0"
 ```
 
 ## Usage instructions

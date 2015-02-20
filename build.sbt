@@ -19,3 +19,5 @@ publishTo <<= (version) { version: String =>
   else                                   Some("releases"  at nexus + "maven-releases/")
 }
 
+resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
+

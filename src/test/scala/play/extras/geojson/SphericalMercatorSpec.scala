@@ -4,7 +4,7 @@ import scala.collection.immutable.Seq
 import org.specs2.mutable.Specification
 import play.api.libs.json._
 
-class DistancesTest extends Specification {
+class SphericalMercatorSpec extends Specification {
 
   "SphericalMercator.fromEPSG4326" should {
 

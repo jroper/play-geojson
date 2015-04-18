@@ -31,7 +31,7 @@ object LngLat {
 object LngLatCrs extends CrsFormat[LngLat] {
   val crs = NamedCrs("urn:ogc:def:crs:EPSG::4326")
   val format = Format[LngLat](
-    __.read[Seq[Int]].map {
+    __.read[Seq[Double]].map {
       case Seq(lng, lat) => LngLat(lng, lat)
     }, Writes(m => Json.arr(m.lng, m.lat))
   )

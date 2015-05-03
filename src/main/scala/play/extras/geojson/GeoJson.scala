@@ -244,7 +244,7 @@ private object GeoFormats {
   object ExtendedWrites {
     // adds pathWrite function to JsPath creates a JsObject from a path and value
     implicit class PathWrites(val path: JsPath) extends AnyVal {
-      def pathWrite[A : Writes](a: A): OWrites[Any] = OWrites[Any](_ => JsPath.createObj(path -> (implicitly[Writes[A]].writes(a))))
+      def pathWrite[A : Writes](a: A): OWrites[Any] = OWrites[Any](_ => JsPath.createObj(path -> implicitly[Writes[A]].writes(a)))
     }
 
     implicit class FunctionalBuilderWithContraOps[M[_] : ContravariantFunctor : FunctionalCanBuild, A](val ma: M[A]) {
@@ -274,7 +274,7 @@ private object GeoFormats {
    * If the type is not the given name, a validation error is thrown.
    */
   def filterType(geoJsonType: String): Reads[String] =
-    readType.filter(new ValidationError("Geometry is not a " + geoJsonType))(_ == geoJsonType)
+    readType.filter(new ValidationError(Seq("Geometry is not a " + geoJsonType)))(_ == geoJsonType)
 
   /**
    * Writes for the GeoJSON type property for the given type.

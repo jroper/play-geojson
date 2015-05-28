@@ -7,7 +7,7 @@ scalaVersion := "2.11.6"
 crossScalaVersions := Seq("2.11.6", "2.10.4")
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play-json" % "2.4.0-RC1" % "provided",
+  "com.typesafe.play" %% "play-json" % "2.4.0" % "provided",
   "org.specs2" %% "specs2-core" % "3.4" %  "test"
 )
 
@@ -16,7 +16,7 @@ resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/release
 resolvers += "Scalaz Bintray Repo" at "https://dl.bintray.com/scalaz/releases"
 
 // Publish settings
-publishTo <<= (version) { version: String =>
+publishTo <<= version { version: String =>
   val nexus = "https://private-repo.typesafe.com/typesafe/"
   if (version.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "maven-snapshots/")
   else                                   Some("releases"  at nexus + "maven-releases/")

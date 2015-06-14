@@ -2,19 +2,21 @@ organization := "com.typesafe.play.extras"
 
 name := "play-geojson"
 
-scalaVersion := "2.11.5"
+scalaVersion := "2.11.6"
 
-crossScalaVersions := Seq("2.11.5", "2.10.4")
+crossScalaVersions := Seq("2.11.6", "2.10.4")
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play-json" % "2.3.8" % "provided",
-  "org.specs2" %% "specs2" % "2.3.12" %  "test"
+  "com.typesafe.play" %% "play-json" % "2.4.0" % "provided",
+  "org.specs2" %% "specs2-core" % "3.4" %  "test"
 )
 
 resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
 
+resolvers += "Scalaz Bintray Repo" at "https://dl.bintray.com/scalaz/releases"
+
 // Publish settings
-publishTo <<= (version) { version: String =>
+publishTo <<= version { version: String =>
   val nexus = "https://private-repo.typesafe.com/typesafe/"
   if (version.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "maven-snapshots/")
   else                                   Some("releases"  at nexus + "maven-releases/")

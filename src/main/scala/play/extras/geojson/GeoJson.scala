@@ -274,7 +274,7 @@ private object GeoFormats {
    * If the type is not the given name, a validation error is thrown.
    */
   def filterType(geoJsonType: String): Reads[String] =
-    readType.filter(new ValidationError(Seq("Geometry is not a " + geoJsonType)))(_ == geoJsonType)
+    readType.filter(ValidationError("Geometry is not a " + geoJsonType))(_ == geoJsonType)
 
   /**
    * Writes for the GeoJSON type property for the given type.

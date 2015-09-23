@@ -59,7 +59,7 @@ object SphericalMercator {
 object SphericalMercatorCrs extends CrsFormat[SphericalMercator] {
   val crs = NamedCrs("urn:ogc:def:crs:EPSG::3857")
   val format = Format[SphericalMercator](
-    __.read[Seq[Int]].map {
+    __.read[Seq[Double]].map {
       case Seq(x, y) => SphericalMercator(x, y)
     }, Writes(m => Json.arr(m.x, m.y))
   )

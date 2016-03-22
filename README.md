@@ -18,8 +18,18 @@ Since it is unofficial, don't expect any support, bug fixes or updates in any so
 Add the following dependency to `build.sbt`:
 
 ```scala
-"com.typesafe.play.extras" %% "play-geojson" % "1.2.0"
+"com.typesafe.play.extras" %% "play-geojson" % "1.4.0"
 ```
+
+### Version compatibility Matrix
+
+| **play-geojson version** | **Play version** |
+|--------------------------|------------------|
+| 1.0.x                    | 2.2.x            |
+| 1.1.x                    | 2.3.x            |
+| 1.2.x                    | 2.3.x            |
+| 1.3.x                    | 2.4.x            |
+| 1.4.x                    | 2.5.x            |
 
 ## Usage instructions
 

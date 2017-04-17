@@ -24,12 +24,12 @@ object GeoJsonSpec extends Specification {
 
   // Reusable objects
   val pointJson = Json.obj("type" -> "Point", "coordinates" -> Json.arr(2.3, 1.2))
-  val point = Point(LatLng(1.2, 2.3))
+  val point = Point(LatLng(2.3, 1.2))
   val pointJsonCustom = Json.obj("type" -> "Point", "coordinates" -> Json.arr(3, 4))
   val pointCustom = Point(SphericalMercator(3, 4))
 
   val multipointJson = Json.obj("type" -> "MultiPoint", "coordinates" -> Seq(Json.arr(2.3, 1.2), Json.arr(4.5, 6.7)))
-  val multipoint = MultiPoint(Seq(LatLng(1.2, 2.3), LatLng(6.7, 4.5)))
+  val multipoint = MultiPoint(Seq(LatLng(2.3, 1.2), LatLng(4.5, 6.7)))
   val multipointJsonCustom = Json.obj("type" -> "MultiPoint", "coordinates" -> Seq(Json.arr(3, 4), Json.arr(5, 6)))
   val multipointCustom = MultiPoint(Seq(SphericalMercator(3, 4), SphericalMercator(5, 6)))
 
@@ -57,7 +57,7 @@ object GeoJsonSpec extends Specification {
 
     def bboxAssertions[A <: GeoJson[LatLng]: Format](json: JsObject, withBbox: (Option[(LatLng, LatLng)]) => A) = {
       val bboxJson = json + ("bbox" -> Json.arr(3.4, 1.2, 7.8, 5.6))
-      val bboxObj = withBbox(Some((LatLng(1.2, 3.4), LatLng(5.6, 7.8))))
+      val bboxObj = withBbox(Some((LatLng(3.4, 1.2), LatLng(7.8, 5.6))))
       "deserialisation with a bbox" in {
         Json.fromJson[A](bboxJson).asOpt must beSome(bboxObj)
       }
@@ -111,14 +111,14 @@ object GeoJsonSpec extends Specification {
 
     "support linestrings" in {
       val json = Json.obj("type" -> "LineString", "coordinates" -> Seq(Json.arr(2.3, 1.2), Json.arr(4.5, 6.7)))
-      val obj = LineString(Seq(LatLng(1.2, 2.3), LatLng(6.7, 4.5)))
+      val obj = LineString(Seq(LatLng(2.3, 1.2), LatLng(4.5, 6.7)))
       geometryAssertions(json, obj)
       bboxAssertions(json, bbox => obj.copy(bbox = bbox))
     }
 
     "support polygons" in {
       val json = Json.obj("type" -> "Polygon", "coordinates" -> Seq(Seq(Json.arr(2.3, 1.2), Json.arr(4.5, 6.7))))
-      val obj = Polygon(Seq(Seq(LatLng(1.2, 2.3), LatLng(6.7, 4.5))))
+      val obj = Polygon(Seq(Seq(LatLng(2.3, 1.2), LatLng(4.5, 6.7))))
       geometryAssertions(json, obj)
       bboxAssertions(json, bbox => obj.copy(bbox = bbox))
     }
@@ -128,7 +128,7 @@ object GeoJsonSpec extends Specification {
         Json.arr(Json.arr(2.3, 1.2), Json.arr(4.5, 6.7)),
         Json.arr(Json.arr(8.9, 10.1))
       ))
-      val obj = MultiLineString(Seq(Seq(LatLng(1.2, 2.3), LatLng(6.7, 4.5)), Seq(LatLng(10.1, 8.9))))
+      val obj = MultiLineString(Seq(Seq(LatLng(2.3, 1.2), LatLng(4.5, 6.7)), Seq(LatLng(8.9, 10.1))))
       geometryAssertions(json, obj)
       bboxAssertions(json, bbox => obj.copy(bbox = bbox))
     }
@@ -138,7 +138,7 @@ object GeoJsonSpec extends Specification {
         Json.arr(Json.arr(Json.arr(2.3, 1.2), Json.arr(4.5, 6.7))),
         Json.arr(Json.arr(Json.arr(8.9, 10.1)))
       ))
-      val obj = MultiPolygon(Seq(Seq(Seq(LatLng(1.2, 2.3), LatLng(6.7, 4.5))), Seq(Seq(LatLng(10.1, 8.9)))))
+      val obj = MultiPolygon(Seq(Seq(Seq(LatLng(2.3, 1.2), LatLng(4.5, 6.7))), Seq(Seq(LatLng(8.9, 10.1)))))
       geometryAssertions(json, obj)
       bboxAssertions(json, bbox => obj.copy(bbox = bbox))
     }

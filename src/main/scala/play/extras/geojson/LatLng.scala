@@ -25,8 +25,8 @@ object Wgs84Format extends CrsFormat[LatLng] {
   val crs = NamedCrs("urn:ogc:def:crs:OGC:1.3:CRS84")
   val format = Format[LatLng](
     __.read[Seq[Double]].map {
-      case Seq(lng, lat) => LatLng(lat, lng)
-    }, Writes(latLng => Json.arr(latLng.lng, latLng.lat))
+      case Seq(lat, lng) => LatLng(lat, lng)
+    }, Writes(latLng => Json.arr(latLng.lat, latLng.lng))
   )
 
   override def isDefault = true

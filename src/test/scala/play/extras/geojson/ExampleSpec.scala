@@ -24,7 +24,7 @@ object ExampleSpec extends Specification {
          { "type": "Point", "coordinates": [100.0, 0.0] }
          """
          // "coordinates are in x, y order (... longitude, latitude for geographic coordinates)" http://geojson.org/geojson-spec.html#id2
-         val obj = Point(LatLng(0.0, 100.0))
+         val obj = Point(LatLng(100.0, 0.0))
          geoJsonAssertions(text, obj)
        }
 
@@ -35,7 +35,7 @@ object ExampleSpec extends Specification {
          }
          """
 
-         val obj = LineString(Seq(LatLng(0.0, 100.0), LatLng(1.0, 101.0)))
+         val obj = LineString(Seq(LatLng(100.0, 0.0), LatLng(101.0, 1.0)))
          geoJsonAssertions(text, obj)
        }
 
@@ -49,7 +49,7 @@ object ExampleSpec extends Specification {
          """
 
          val obj = Polygon(Seq(
-           Seq(LatLng(0.0, 100.0), LatLng(0.0, 101.0), LatLng(1.0, 101.0), LatLng(1.0, 100.0), LatLng(0.0, 100.0))
+           Seq(LatLng(100.0, 0.0), LatLng(101.0, 0.0), LatLng(101.0, 1.0), LatLng(100.0, 1.0), LatLng(100.0, 0.0))
          ))
          geoJsonAssertions(text, obj)
        }
@@ -65,8 +65,8 @@ object ExampleSpec extends Specification {
          """
 
          val obj = Polygon(Seq(
-           Seq(LatLng(0.0, 100.0), LatLng(0.0, 101.0), LatLng(1.0, 101.0), LatLng(1.0, 100.0), LatLng(0.0, 100.0)),
-           Seq(LatLng(0.2, 100.2), LatLng(0.2, 100.8), LatLng(0.8, 100.8), LatLng(0.8, 100.2), LatLng(0.2, 100.2))
+           Seq(LatLng(100.0, 0.0), LatLng(101.0, 0.0), LatLng(101.0, 1.0), LatLng(100.0, 1.0), LatLng(100.0, 0.0)),
+           Seq(LatLng(100.2, 0.2), LatLng(100.8, 0.2), LatLng(100.8, 0.8), LatLng(100.2, 0.8), LatLng(100.2, 0.2))
          ))
          geoJsonAssertions(text, obj)
        }
@@ -78,7 +78,7 @@ object ExampleSpec extends Specification {
          }
          """
 
-         val obj = MultiPoint(Seq(LatLng(0.0, 100.0), LatLng(1.0, 101.0)))
+         val obj = MultiPoint(Seq(LatLng(100.0, 0.0), LatLng(101.0, 1.0)))
          geoJsonAssertions(text, obj)
        }
 
@@ -93,8 +93,8 @@ object ExampleSpec extends Specification {
          """
 
          val obj = MultiLineString(Seq(
-           Seq(LatLng(0.0, 100.0), LatLng(1.0, 101.0)),
-           Seq(LatLng(2.0, 102.0), LatLng(3.0, 103.0))
+           Seq(LatLng(100.0, 0.0), LatLng(101.0, 1.0)),
+           Seq(LatLng(102.0, 2.0), LatLng(103.0, 3.0))
          ))
          geoJsonAssertions(text, obj)
        }
@@ -112,10 +112,10 @@ object ExampleSpec extends Specification {
 
          val obj = MultiPolygon(Seq(
            Seq(
-             Seq(LatLng(2.0, 102.0), LatLng(2.0, 103.0), LatLng(3.0, 103.0), LatLng(3.0, 102.0), LatLng(2.0, 102.0))
+             Seq(LatLng(102.0, 2.0), LatLng(103.0, 2.0), LatLng(103.0, 3.0), LatLng(102.0, 3.0), LatLng(102.0, 2.0))
            ),Seq(
-             Seq(LatLng(0.0, 100.0), LatLng(0.0, 101.0), LatLng(1.0, 101.0), LatLng(1.0, 100.0), LatLng(0.0, 100.0)),
-             Seq(LatLng(0.2, 100.2), LatLng(0.2, 100.8), LatLng(0.8, 100.8), LatLng(0.8, 100.2), LatLng(0.2, 100.2))
+             Seq(LatLng(100.0, 0.0), LatLng(101.0, 0.0), LatLng(101.0, 1.0), LatLng(100.0, 1.0), LatLng(100.0, 0.0)),
+             Seq(LatLng(100.2, 0.2), LatLng(100.8, 0.2), LatLng(100.8, 0.8), LatLng(100.2, 0.8), LatLng(100.2, 0.2))
            )
           ))
          geoJsonAssertions(text, obj)
@@ -136,8 +136,8 @@ object ExampleSpec extends Specification {
          """
 
          val obj = GeometryCollection(Seq(
-           Point(LatLng(0.0, 100.0)),
-           LineString(Seq(LatLng(0.0, 101.0), LatLng(1.0, 102.0)))
+           Point(LatLng(100.0, 0.0)),
+           LineString(Seq(LatLng(101.0, 0.0), LatLng(102.0, 1.0)))
          ))
          geoJsonAssertions(text, obj)
        }
@@ -152,7 +152,7 @@ object ExampleSpec extends Specification {
              ]]}}
            """.stripMargin
          val obj = Feature(Polygon(Seq(
-           Seq(LatLng(52.202136224203464, 0.017852783203125), LatLng(52.142338229345874, 0.13629913330078125), LatLng(52.171405040721886, 0.26744842529296875), LatLng(52.230953706180294, 0.2032470703125), LatLng(52.202136224203464, 0.017852783203125))
+           Seq(LatLng(0.017852783203125, 52.202136224203464), LatLng(0.13629913330078125, 52.142338229345874), LatLng(0.26744842529296875, 52.171405040721886), LatLng(0.2032470703125, 52.230953706180294), LatLng(0.017852783203125, 52.202136224203464))
          )), properties = Some(JsObject(Seq())))
          geoJsonAssertions(text, obj)
        }

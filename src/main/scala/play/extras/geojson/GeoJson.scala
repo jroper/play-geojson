@@ -1,10 +1,11 @@
 package play.extras.geojson
 
+import play.api.data.validation.ValidationError
+
 import scala.collection.immutable.Seq
 import play.api.libs.json._
 import play.api.libs.functional._
 import play.api.libs.functional.syntax._
-import play.api.data.validation.ValidationError
 
 /**
  * A GeoJSON object.
@@ -16,10 +17,10 @@ sealed trait GeoJson[C] {
 }
 
 object GeoJson {
-  implicit def geoJsonWrites[C](implicit crs: CrsFormat[C]): Writes[GeoJson[C]] =
-    GeoFormats.writesWithCrs(GeoFormats.geoJsonFormat[C](crs.format))
-  implicit def geoJsonReads[C](implicit crs: CrsFormat[C]): Reads[GeoJson[C]] =
-    GeoFormats.geoJsonFormat(crs.format)
+  implicit def geoJsonWrites[C, P](implicit crs: CrsFormat[C], fp: Format[P]): Writes[GeoJson[C]] =
+    GeoFormats.writesWithCrs(GeoFormats.geoJsonFormat[C, P](crs.format, fp))
+  implicit def geoJsonReads[C, P](implicit crs: CrsFormat[C], fp: Format[P]): Reads[GeoJson[C]] =
+    GeoFormats.geoJsonFormat(crs.format, fp)
 }
 
 /**
@@ -139,11 +140,14 @@ object GeometryCollection {
  * @param bbox The bounding box for the sequence of features, if any.
  * @tparam C The object used to model the CRS that this GeoJSON object uses.
  */
-case class FeatureCollection[C](features: Seq[Feature[C]], bbox: Option[(C, C)] = None) extends GeoJson[C]
+case class FeatureCollection[C, P](features: Seq[Feature[C, P]], bbox: Option[(C, C)] = None) extends GeoJson[C]
 
 object FeatureCollection {
-  implicit def featureCollectionReads[C](implicit crs: CrsFormat[C]): Reads[FeatureCollection[C]] =
-    GeoFormats.featureCollectionFormat(crs.format)
+  implicit def featureCollectionReads[C, P](implicit crs: CrsFormat[C], fp: Format[P]): Reads[FeatureCollection[C, P]] =
+    GeoFormats.featureCollectionFormat(crs.format, fp)
+
+  def apply[C: Format, P: Format]: (Seq[Feature[C, P]], Option[(C, C)]) => FeatureCollection[C, P] =
+    (features: Seq[Feature[C, P]], bbox: Option[(C, C)]) => FeatureCollection(features, bbox)
 }
 
 /**
@@ -155,14 +159,20 @@ object FeatureCollection {
  * @param bbox The bounding box for the feature, if any.
  * @tparam C The object used to model the CRS that this GeoJSON object uses.
  */
-case class Feature[C](geometry: Geometry[C],
-                      properties: Option[JsObject] = None,
+case class Feature[C, P](geometry: Geometry[C],
+                      properties: Option[P] = None,
                       id: Option[JsValue] = None,
                       bbox: Option[(C, C)] = None) extends GeoJson[C]
 
 object Feature {
-  implicit def featureReads[C](implicit crs: CrsFormat[C]): Reads[Feature[C]] =
-    GeoFormats.featureFormat(crs.format)
+  implicit def featureReads[C, P](implicit crs: CrsFormat[C], fp: Format[P]): Reads[Feature[C, P]] =
+    GeoFormats.featureFormat(crs.format, fp)
+
+  def apply[C: Format, P: Format]: (Geometry[C], Option[P], Option[JsValue], Option[(C, C)]) => Feature[C, P] = (
+    geometry: Geometry[C],
+    properties: Option[P],
+    id: Option[JsValue],
+    bbox: Option[(C, C)]) => Feature(geometry, properties, id, bbox)
 }
 
 /**
@@ -249,13 +259,13 @@ private object GeoFormats {
 
     implicit class FunctionalBuilderWithContraOps[M[_] : ContravariantFunctor : FunctionalCanBuild, A](val ma: M[A]) {
       def ~~> [B <: A](mb: M[B]): M[B] = implicitly[ContravariantFunctor[M]].contramap(
-        implicitly[FunctionalCanBuild[M]].apply(ma,mb)
-        , (b:B) => new play.api.libs.functional.~(b:A, b:B)
+        implicitly[FunctionalCanBuild[M]].apply(ma,mb),
+        (b:B) => play.api.libs.functional.~(b:A, b:B)
       )
 
       def <~~ [B >: A](mb: M[B]): M[A] = implicitly[ContravariantFunctor[M]].contramap(
         implicitly[FunctionalCanBuild[M]].apply(ma,mb),
-        (a:A) => new play.api.libs.functional.~(a:A, a:B)
+        (a:A) => play.api.libs.functional.~(a:A, a:B)
       )
     }
 
@@ -267,7 +277,7 @@ private object GeoFormats {
    * Reads the GeoJSON type property.
    */
   def readType: Reads[String] = (__ \ "type").read[String]
-  
+
   /**
    * Reads a GeoJSON type property with the given type.
    *
@@ -321,7 +331,7 @@ private object GeoFormats {
       ((__ \ "coordinates").format[T] ~ formatBbox[C]).apply(read, unlift(write))
     )
 
-  def errorReads[T](message: String) = Reads[T](_ => JsError(message))
+  def errorReads[T](message: String): Reads[T] = Reads[T](_ => JsError(message))
 
   /**
    * Reads is invariant in its type parameter.  This function widens it.
@@ -359,10 +369,10 @@ private object GeoFormats {
     )
   }
 
-  def featureFormat[C : Format]: Format[Feature[C]] = {
+  def featureFormat[C : Format, P: Format]: Format[Feature[C, P]] = {
     geoJsonFormatFor("Feature", (
         (__ \ "geometry").format(geometryFormat[C]) ~
-        (__ \ "properties").formatNullable[JsObject] ~
+        (__ \ "properties").formatNullable[P] ~
         // The spec isn't clear on what the id can be
         (__ \ "id").formatNullable[JsValue] ~
         formatBbox[C]
@@ -370,10 +380,10 @@ private object GeoFormats {
     )
   }
 
-  def featureCollectionFormat[C : Format]: Format[FeatureCollection[C]] = {
-    implicit val ff = featureFormat[C]
+  def featureCollectionFormat[C: Format, P: Format]: Format[FeatureCollection[C, P]] = {
+    implicit val ff: Format[Feature[C, P]] = featureFormat[C, P]
     geoJsonFormatFor("FeatureCollection",
-      ((__ \ "features").format[Seq[Feature[C]]] ~ formatBbox[C])
+      ((__ \ "features").format[Seq[Feature[C, P]]] ~ formatBbox[C])
         .apply(FeatureCollection.apply, unlift(FeatureCollection.unapply))
     )
   }
@@ -400,29 +410,26 @@ private object GeoFormats {
     }
   )
 
-  def geoJsonFormat[C: Format]: Format[GeoJson[C]] = Format(
+  def geoJsonFormat[C: Format, P: Format]: Format[GeoJson[C]] = Format(
     (geometryFormat[C]: Reads[Geometry[C]]).or(
       readType.flatMap {
-        case "Feature" => featureFormat[C]
-        case "FeatureCollection" => featureCollectionFormat[C]
+        case "Feature" => featureFormat[C, P]
+        case "FeatureCollection" => featureCollectionFormat[C, P]
         case unknown => errorReads("Unknown GeoJSON type: " + unknown)
       }
     ),
     Writes {
       case geometry: Geometry[C] => geometryFormat[C].writes(geometry)
-      case feature: Feature[C] => featureFormat[C].writes(feature)
-      case featureCollection: FeatureCollection[C] => featureCollectionFormat[C].writes(featureCollection)
+      case feature: Feature[C, P] => featureFormat[C, P].writes(feature)
+      case featureCollection: FeatureCollection[C, P] => featureCollectionFormat[C, P].writes(featureCollection)
     }
   )
 
-  def writesWithCrs[C, G](writes: Writes[G])(implicit crs: CrsFormat[C]) = writes.transform { json =>
-    if (crs.isDefault) {
-      json
-    } else {
-      json match {
-        case obj: JsObject => obj ++ Json.obj("crs" -> crs.crs)
-        case other => other
-      }
+  def writesWithCrs[C, G](writes: Writes[G])(implicit crs: CrsFormat[C]): Writes[G] = writes.transform { json =>
+    json match {
+      case _ if crs.isDefault => json
+      case obj: JsObject => obj ++ Json.obj("crs" -> crs.crs)
+      case other => other
     }
   }
 

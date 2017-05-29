@@ -1,10 +1,11 @@
 package play.extras.geojson
 
+import play.api.data.validation.ValidationError
+
 import scala.collection.immutable.Seq
 import play.api.libs.json._
 import play.api.libs.functional._
 import play.api.libs.functional.syntax._
-import play.api.data.validation.ValidationError
 
 /**
  * A GeoJSON object.
@@ -139,11 +140,14 @@ object GeometryCollection {
  * @param bbox The bounding box for the sequence of features, if any.
  * @tparam C The object used to model the CRS that this GeoJSON object uses.
  */
-case class FeatureCollection[C, P: Format](features: Seq[Feature[C, P]], bbox: Option[(C, C)] = None) extends GeoJson[C]
+case class FeatureCollection[C, P](features: Seq[Feature[C, P]], bbox: Option[(C, C)] = None) extends GeoJson[C]
 
 object FeatureCollection {
   implicit def featureCollectionReads[C, P](implicit crs: CrsFormat[C], fp: Format[P]): Reads[FeatureCollection[C, P]] =
     GeoFormats.featureCollectionFormat(crs.format, fp)
+
+  def apply[C: Format, P: Format]: (Seq[Feature[C, P]], Option[(C, C)]) => FeatureCollection[C, P] =
+    (features: Seq[Feature[C, P]], bbox: Option[(C, C)]) => new FeatureCollection(features, bbox)
 }
 
 /**
@@ -155,7 +159,7 @@ object FeatureCollection {
  * @param bbox The bounding box for the feature, if any.
  * @tparam C The object used to model the CRS that this GeoJSON object uses.
  */
-case class Feature[C, P: Format](geometry: Geometry[C],
+case class Feature[C, P](geometry: Geometry[C],
                       properties: Option[P] = None,
                       id: Option[JsValue] = None,
                       bbox: Option[(C, C)] = None) extends GeoJson[C]
@@ -163,6 +167,12 @@ case class Feature[C, P: Format](geometry: Geometry[C],
 object Feature {
   implicit def featureReads[C, P](implicit crs: CrsFormat[C], fp: Format[P]): Reads[Feature[C, P]] =
     GeoFormats.featureFormat(crs.format, fp)
+
+  def apply[C: Format, P: Format]: (Geometry[C], Option[P], Option[JsValue], Option[(C, C)]) => Feature[C, P] = (
+    geometry: Geometry[C],
+    properties: Option[P],
+    id: Option[JsValue],
+    bbox: Option[(C, C)]) => new Feature(geometry, properties, id, bbox)
 }
 
 /**
@@ -359,10 +369,13 @@ private object GeoFormats {
     )
   }
 
+  implicit def propertiesFormat[P: Format]: OFormat[Option[P]] = (__ \ "properties").formatNullable[P]
+
   def featureFormat[C : Format, P: Format]: Format[Feature[C, P]] = {
+    implicit val fp = propertiesFormat[P]
     geoJsonFormatFor("Feature", (
         (__ \ "geometry").format(geometryFormat[C]) ~
-        (__ \ "properties").formatNullable[P] ~
+        propertiesFormat[P] ~
         // The spec isn't clear on what the id can be
         (__ \ "id").formatNullable[JsValue] ~
         formatBbox[C]
@@ -371,7 +384,7 @@ private object GeoFormats {
   }
 
   def featureCollectionFormat[C: Format, P: Format]: Format[FeatureCollection[C, P]] = {
-    implicit val ff = featureFormat[C, P]
+    implicit val ff: Format[Feature[C, P]] = featureFormat[C, P]
     geoJsonFormatFor("FeatureCollection",
       ((__ \ "features").format[Seq[Feature[C, P]]] ~ formatBbox[C])
         .apply(FeatureCollection.apply, unlift(FeatureCollection.unapply))

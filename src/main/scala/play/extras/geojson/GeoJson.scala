@@ -369,13 +369,10 @@ private object GeoFormats {
     )
   }
 
-  implicit def propertiesFormat[P: Format]: OFormat[Option[P]] = (__ \ "properties").formatNullable[P]
-
   def featureFormat[C : Format, P: Format]: Format[Feature[C, P]] = {
-    implicit val fp = propertiesFormat[P]
     geoJsonFormatFor("Feature", (
         (__ \ "geometry").format(geometryFormat[C]) ~
-        propertiesFormat[P] ~
+        (__ \ "properties").formatNullable[P] ~
         // The spec isn't clear on what the id can be
         (__ \ "id").formatNullable[JsValue] ~
         formatBbox[C]

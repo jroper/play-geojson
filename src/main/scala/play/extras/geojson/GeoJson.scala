@@ -426,13 +426,10 @@ private object GeoFormats {
   )
 
   def writesWithCrs[C, G](writes: Writes[G])(implicit crs: CrsFormat[C]): Writes[G] = writes.transform { json =>
-    if (crs.isDefault) {
-      json
-    } else {
-      json match {
-        case obj: JsObject => obj ++ Json.obj("crs" -> crs.crs)
-        case other => other
-      }
+    json match {
+      case _ if crs.isDefault => json
+      case obj: JsObject => obj ++ Json.obj("crs" -> crs.crs)
+      case other => other
     }
   }
 

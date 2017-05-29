@@ -31,7 +31,7 @@ object GeoJson {
 sealed trait Geometry[C] extends GeoJson[C]
 
 object Geometry {
-  implicit def geometryReads[C](implicit crs: CrsFormat[C]): Format[Geometry[C]] =
+  implicit def geometryReads[C](implicit crs: CrsFormat[C]): Reads[Geometry[C]] =
     GeoFormats.geometryFormat(crs.format)
 }
 
@@ -45,7 +45,7 @@ object Geometry {
 case class Point[C](coordinates: C, bbox: Option[(C, C)] = None) extends Geometry[C]
 
 object Point {
-  implicit def pointReads[C](implicit crs: CrsFormat[C]): Format[Point[C]] =
+  implicit def pointReads[C](implicit crs: CrsFormat[C]): Reads[Point[C]] =
     GeoFormats.pointFormat(crs.format)
 }
 
@@ -59,7 +59,7 @@ object Point {
 case class MultiPoint[C](coordinates: Seq[C], bbox: Option[(C, C)] = None) extends Geometry[C]
 
 object MultiPoint {
-  implicit def multiPointReads[C](implicit crs: CrsFormat[C]): Format[MultiPoint[C]] =
+  implicit def multiPointReads[C](implicit crs: CrsFormat[C]): Reads[MultiPoint[C]] =
     GeoFormats.multiPointFormat(crs.format)
 }
 
@@ -73,7 +73,7 @@ object MultiPoint {
 case class LineString[C](coordinates: Seq[C], bbox: Option[(C, C)] = None) extends Geometry[C]
 
 object LineString {
-  implicit def lineStringReads[C](implicit crs: CrsFormat[C]): Format[LineString[C]] =
+  implicit def lineStringReads[C](implicit crs: CrsFormat[C]): Reads[LineString[C]] =
     GeoFormats.lineStringFormat(crs.format)
 }
 
@@ -87,7 +87,7 @@ object LineString {
 case class MultiLineString[C](coordinates: Seq[Seq[C]], bbox: Option[(C, C)] = None) extends Geometry[C]
 
 object MultiLineString {
-  implicit def multiLineStringReads[C](implicit crs: CrsFormat[C]): Format[MultiLineString[C]] =
+  implicit def multiLineStringReads[C](implicit crs: CrsFormat[C]): Reads[MultiLineString[C]] =
     GeoFormats.multiLineStringFormat(crs.format)
 }
 
@@ -101,7 +101,7 @@ object MultiLineString {
 case class Polygon[C](coordinates: Seq[Seq[C]], bbox: Option[(C, C)] = None) extends Geometry[C]
 
 object Polygon {
-  implicit def polygonReads[C](implicit crs: CrsFormat[C]): Format[Polygon[C]] =
+  implicit def polygonReads[C](implicit crs: CrsFormat[C]): Reads[Polygon[C]] =
     GeoFormats.polygonFormat(crs.format)
 }
 
@@ -115,7 +115,7 @@ object Polygon {
 case class MultiPolygon[C](coordinates: Seq[Seq[Seq[C]]], bbox: Option[(C, C)] = None) extends Geometry[C]
 
 object MultiPolygon {
-  implicit def multiPolygonReads[C](implicit crs: CrsFormat[C]): Format[MultiPolygon[C]] =
+  implicit def multiPolygonReads[C](implicit crs: CrsFormat[C]): Reads[MultiPolygon[C]] =
     GeoFormats.multiPolygonFormat(crs.format)
 }
 
@@ -129,7 +129,7 @@ object MultiPolygon {
 case class GeometryCollection[C](geometries: Seq[Geometry[C]], bbox: Option[(C, C)] = None) extends Geometry[C]
 
 object GeometryCollection {
-  implicit def geometryCollectionReads[C](implicit crs: CrsFormat[C]): Format[GeometryCollection[C]] =
+  implicit def geometryCollectionReads[C](implicit crs: CrsFormat[C]): Reads[GeometryCollection[C]] =
     GeoFormats.geometryCollectionFormat(crs.format)
 }
 
@@ -143,7 +143,7 @@ object GeometryCollection {
 case class FeatureCollection[C, P](features: Seq[Feature[C, P]], bbox: Option[(C, C)] = None) extends GeoJson[C]
 
 object FeatureCollection {
-  implicit def featureCollectionReads[C, P](implicit crs: CrsFormat[C], fp: Format[P]): Format[FeatureCollection[C, P]] =
+  implicit def featureCollectionReads[C, P](implicit crs: CrsFormat[C], fp: Format[P]): Reads[FeatureCollection[C, P]] =
     GeoFormats.featureCollectionFormat(crs.format, fp)
 
   def apply[C: Format, P: Format]: (Seq[Feature[C, P]], Option[(C, C)]) => FeatureCollection[C, P] =
@@ -165,7 +165,7 @@ case class Feature[C, P](geometry: Geometry[C],
                       bbox: Option[(C, C)] = None) extends GeoJson[C]
 
 object Feature {
-  implicit def featureReads[C, P](implicit crs: CrsFormat[C], fp: Format[P]): Format[Feature[C, P]] =
+  implicit def featureReads[C, P](implicit crs: CrsFormat[C], fp: Format[P]): Reads[Feature[C, P]] =
     GeoFormats.featureFormat(crs.format, fp)
 
   def apply[C: Format, P: Format]: (Geometry[C], Option[P], Option[JsValue], Option[(C, C)]) => Feature[C, P] = (

@@ -7,16 +7,16 @@ import play.api.libs.functional.syntax._
 import play.extras.geojson._
 
 /**
- * LngLat is like LatLng except the ordering or latitude and longitude.
- *
- * In GeoJSON, and therefore Elasticsearch, the correct coordinate order 
- * is longitude, latitude (X, Y) within coordinate arrays. This differs 
- * from many Geospatial APIs (e.g., Google Maps) that generally use the 
- * colloquial latitude, longitude (Y, X).
- *
- * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-geo-shape-type.html
- *
- */
+  * LngLat is like LatLng except the ordering or latitude and longitude.
+  *
+  * In GeoJSON, and therefore Elasticsearch, the correct coordinate order
+  * is longitude, latitude (X, Y) within coordinate arrays. This differs
+  * from many Geospatial APIs (e.g., Google Maps) that generally use the
+  * colloquial latitude, longitude (Y, X).
+  *
+  * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-geo-shape-type.html
+  *
+  */
 case class LngLat(lng: Double, lat: Double)
 
 object LngLat {
@@ -33,8 +33,9 @@ object LngLatCrs extends CrsFormat[LngLat] {
   val format = Format[LngLat](
     __.read[Seq[Double]].map {
       case Seq(lng, lat) => LngLat(lng, lat)
+      case Seq(lng, lat, alt) => LngLat(lng, lat)
     }, Writes(m => Json.arr(m.lng, m.lat))
   )
-  
+
   override def isDefault = true
 }

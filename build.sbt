@@ -1,12 +1,12 @@
 organization := "com.typesafe.play.extras"
 name := "play-geojson"
 
-scalaVersion := "2.11.7"
-crossScalaVersions := Seq("2.11.7")
+scalaVersion := "2.12.2"
+crossScalaVersions := Seq("2.12.2")
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play-json" % "2.5.0" % "provided",
-  "org.specs2" %% "specs2-core" % "3.4" %  "test"
+  "com.typesafe.play" %% "play-json" % "2.6.0",
+  "org.specs2" %% "specs2-core" % "3.9.1" % "test"
 )
 
 resolvers += "Scalaz Bintray Repo" at "https://dl.bintray.com/scalaz/releases"
@@ -18,13 +18,13 @@ pomExtra := {
     <url>https://github.com/jroper/play-geojson</url>
     <connection>scm:git:git@github.com:jroper/play-geojson.git</connection>
   </scm>
-  <developers>
-    <developer>
-      <id>jroper</id>
-      <name>James Roper</name>
-      <url>https://jazzy.id.au</url>
-    </developer>
-  </developers>
+    <developers>
+      <developer>
+        <id>jroper</id>
+        <name>James Roper</name>
+        <url>https://jazzy.id.au</url>
+      </developer>
+    </developers>
 }
 pomIncludeRepository := { _ => false }
 
@@ -38,7 +38,7 @@ import ReleaseTransformations._
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
-  runTest, 
+  runTest,
   setReleaseVersion,
   commitReleaseVersion,
   tagRelease,
@@ -48,4 +48,3 @@ releaseProcess := Seq[ReleaseStep](
   commitNextVersion,
   pushChanges
 )
-

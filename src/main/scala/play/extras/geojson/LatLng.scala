@@ -6,11 +6,11 @@ import play.api.libs.functional._
 import play.api.libs.functional.syntax._
 
 /**
- * A latitude longitude CRS, for use with WGS84 ( == EPSG:4326).
- *
- * @param lat The latitude.
- * @param lng The longitude.
- */
+  * A latitude longitude CRS, for use with WGS84 ( == EPSG:4326).
+  *
+  * @param lat The latitude.
+  * @param lng The longitude.
+  */
 case class LatLng(lat: Double, lng: Double)
 
 object LatLng {
@@ -19,13 +19,14 @@ object LatLng {
 }
 
 /**
- * The WGS84 CRS format. Equals to EPSG:4326 CRS format.
- */
+  * The WGS84 CRS format. Equals to EPSG:4326 CRS format.
+  */
 object Wgs84Format extends CrsFormat[LatLng] {
   val crs = NamedCrs("urn:ogc:def:crs:OGC:1.3:CRS84")
   val format = Format[LatLng](
     __.read[Seq[Double]].map {
       case Seq(lng, lat) => LatLng(lat, lng)
+      case Seq(lng, lat, alt) => LatLng(lat, lng)
     }, Writes(latLng => Json.arr(latLng.lng, latLng.lat))
   )
 

@@ -4,13 +4,13 @@ import scala.collection.immutable.Seq
 import play.api.libs.json._
 import play.api.libs.functional._
 import play.api.libs.functional.syntax._
-import play.api.data.validation.ValidationError
+
 
 /**
- * A GeoJSON object.
- *
- * @tparam C The object used to model the CRS that this GeoJSON object uses.
- */
+  * A GeoJSON object.
+  *
+  * @tparam C The object used to model the CRS that this GeoJSON object uses.
+  */
 sealed trait GeoJson[C] {
   val bbox: Option[(C, C)]
 }
@@ -23,10 +23,10 @@ object GeoJson {
 }
 
 /**
- * A GeoJSON Geometry object.
- *
- * @tparam C The object used to model the CRS that this GeoJSON object uses.
- */
+  * A GeoJSON Geometry object.
+  *
+  * @tparam C The object used to model the CRS that this GeoJSON object uses.
+  */
 sealed trait Geometry[C] extends GeoJson[C]
 
 object Geometry {
@@ -35,12 +35,12 @@ object Geometry {
 }
 
 /**
- * A GeoJSON Point object.
- *
- * @param coordinates The coordinates of this point.
- * @param bbox The bounding box of the point, if any.
- * @tparam C The object used to model the CRS that this GeoJSON object uses.
- */
+  * A GeoJSON Point object.
+  *
+  * @param coordinates The coordinates of this point.
+  * @param bbox The bounding box of the point, if any.
+  * @tparam C The object used to model the CRS that this GeoJSON object uses.
+  */
 case class Point[C](coordinates: C, bbox: Option[(C, C)] = None) extends Geometry[C]
 
 object Point {
@@ -49,12 +49,12 @@ object Point {
 }
 
 /**
- * A GeoJSON MultiPoint object.
- *
- * @param coordinates The sequence coordinates for the points.
- * @param bbox The bounding box for the points, if any.
- * @tparam C The object used to model the CRS that this GeoJSON object uses.
- */
+  * A GeoJSON MultiPoint object.
+  *
+  * @param coordinates The sequence coordinates for the points.
+  * @param bbox The bounding box for the points, if any.
+  * @tparam C The object used to model the CRS that this GeoJSON object uses.
+  */
 case class MultiPoint[C](coordinates: Seq[C], bbox: Option[(C, C)] = None) extends Geometry[C]
 
 object MultiPoint {
@@ -63,12 +63,12 @@ object MultiPoint {
 }
 
 /**
- * A GeoJSON LineString object.
- *
- * @param coordinates The sequence of coordinates for the line.
- * @param bbox The bounding box for the line, if any.
- * @tparam C The object used to model the CRS that this GeoJSON object uses.
- */
+  * A GeoJSON LineString object.
+  *
+  * @param coordinates The sequence of coordinates for the line.
+  * @param bbox The bounding box for the line, if any.
+  * @tparam C The object used to model the CRS that this GeoJSON object uses.
+  */
 case class LineString[C](coordinates: Seq[C], bbox: Option[(C, C)] = None) extends Geometry[C]
 
 object LineString {
@@ -77,12 +77,12 @@ object LineString {
 }
 
 /**
- * A GeoJSON MultiLineString object.
- *
- * @param coordinates The sequence of lines.
- * @param bbox The bounding box for the lines, if any.
- * @tparam C The object used to model the CRS that this GeoJSON object uses.
- */
+  * A GeoJSON MultiLineString object.
+  *
+  * @param coordinates The sequence of lines.
+  * @param bbox The bounding box for the lines, if any.
+  * @tparam C The object used to model the CRS that this GeoJSON object uses.
+  */
 case class MultiLineString[C](coordinates: Seq[Seq[C]], bbox: Option[(C, C)] = None) extends Geometry[C]
 
 object MultiLineString {
@@ -91,12 +91,12 @@ object MultiLineString {
 }
 
 /**
- * A GeoJSON Polygon object.
- *
- * @param coordinates A sequence of sequences of corners in the polygon.
- * @param bbox The bounding box for the polygon, if any.
- * @tparam C The object used to model the CRS that this GeoJSON object uses.
- */
+  * A GeoJSON Polygon object.
+  *
+  * @param coordinates A sequence of sequences of corners in the polygon.
+  * @param bbox The bounding box for the polygon, if any.
+  * @tparam C The object used to model the CRS that this GeoJSON object uses.
+  */
 case class Polygon[C](coordinates: Seq[Seq[C]], bbox: Option[(C, C)] = None) extends Geometry[C]
 
 object Polygon {
@@ -105,12 +105,12 @@ object Polygon {
 }
 
 /**
- * A GeoJSON MultiPolygon object.
- *
- * @param coordinates The sequence of polygons.
- * @param bbox The bounding box for the polygons, if any.
- * @tparam C The object used to model the CRS that this GeoJSON object uses.
- */
+  * A GeoJSON MultiPolygon object.
+  *
+  * @param coordinates The sequence of polygons.
+  * @param bbox The bounding box for the polygons, if any.
+  * @tparam C The object used to model the CRS that this GeoJSON object uses.
+  */
 case class MultiPolygon[C](coordinates: Seq[Seq[Seq[C]]], bbox: Option[(C, C)] = None) extends Geometry[C]
 
 object MultiPolygon {
@@ -119,12 +119,12 @@ object MultiPolygon {
 }
 
 /**
- * A GeoJSON GeometryCollection object.
- *
- * @param geometries The sequence of geometries.
- * @param bbox The bounding box for the geometries, if any.
- * @tparam C The object used to model the CRS that this GeoJSON object uses.
- */
+  * A GeoJSON GeometryCollection object.
+  *
+  * @param geometries The sequence of geometries.
+  * @param bbox The bounding box for the geometries, if any.
+  * @tparam C The object used to model the CRS that this GeoJSON object uses.
+  */
 case class GeometryCollection[C](geometries: Seq[Geometry[C]], bbox: Option[(C, C)] = None) extends Geometry[C]
 
 object GeometryCollection {
@@ -133,12 +133,12 @@ object GeometryCollection {
 }
 
 /**
- * A GeoJSON FeatureCollection object.
- *
- * @param features The sequence of features.
- * @param bbox The bounding box for the sequence of features, if any.
- * @tparam C The object used to model the CRS that this GeoJSON object uses.
- */
+  * A GeoJSON FeatureCollection object.
+  *
+  * @param features The sequence of features.
+  * @param bbox The bounding box for the sequence of features, if any.
+  * @tparam C The object used to model the CRS that this GeoJSON object uses.
+  */
 case class FeatureCollection[C](features: Seq[Feature[C]], bbox: Option[(C, C)] = None) extends GeoJson[C]
 
 object FeatureCollection {
@@ -147,14 +147,14 @@ object FeatureCollection {
 }
 
 /**
- * A GeoJSON Feature object.
- *
- * @param geometry The geometry for the feature.
- * @param properties The properties for the feature, if any.
- * @param id The id of the feature, if any.
- * @param bbox The bounding box for the feature, if any.
- * @tparam C The object used to model the CRS that this GeoJSON object uses.
- */
+  * A GeoJSON Feature object.
+  *
+  * @param geometry The geometry for the feature.
+  * @param properties The properties for the feature, if any.
+  * @param id The id of the feature, if any.
+  * @param bbox The bounding box for the feature, if any.
+  * @tparam C The object used to model the CRS that this GeoJSON object uses.
+  */
 case class Feature[C](geometry: Geometry[C],
                       properties: Option[JsObject] = None,
                       id: Option[JsValue] = None,
@@ -166,8 +166,8 @@ object Feature {
 }
 
 /**
- * A GeoJSON coordinate reference system (CRS).
- */
+  * A GeoJSON coordinate reference system (CRS).
+  */
 sealed trait Crs
 
 object Crs {
@@ -187,10 +187,10 @@ object Crs {
 }
 
 /**
- * A GeoJSON named CRS.
- *
- * @param name The name of the CRS.
- */
+  * A GeoJSON named CRS.
+  *
+  * @param name The name of the CRS.
+  */
 case class NamedCrs(name: String) extends Crs
 
 object NamedCrs {
@@ -199,11 +199,11 @@ object NamedCrs {
 }
 
 /**
- * A GeoJSON linked CRS.
- *
- * @param href The href for the CRS.
- * @param type The type of the link, if any.
- */
+  * A GeoJSON linked CRS.
+  *
+  * @param href The href for the CRS.
+  * @param type The type of the link, if any.
+  */
 case class LinkedCrs(href: String, `type`: Option[String]) extends Crs
 
 object LinkedCrs {
@@ -212,35 +212,35 @@ object LinkedCrs {
 }
 
 /**
- * A CRS format
- */
+  * A CRS format
+  */
 trait CrsFormat[C] {
   /**
-   * The CRS for the CRS format
-   */
+    * The CRS for the CRS format
+    */
   def crs: Crs
 
   /**
-   * The format to use to write the CRS.
-   */
+    * The format to use to write the CRS.
+    */
   def format: Format[C]
 
   /**
-   * Whether this is the default CRS format.  If so, no CRS information will be added to the GeoJSON object when
-   * serialised.
-   */
+    * Whether this is the default CRS format.  If so, no CRS information will be added to the GeoJSON object when
+    * serialised.
+    */
   def isDefault = false
 }
 
 
 /**
- * These are the raw "internal" formats.  They do not add the CRS parameter when serialising.
- */
+  * These are the raw "internal" formats.  They do not add the CRS parameter when serialising.
+  */
 private object GeoFormats {
 
   /**
-   * Adds contramap ops to functional builders
-   */
+    * Adds contramap ops to functional builders
+    */
   object ExtendedWrites {
     // adds pathWrite function to JsPath creates a JsObject from a path and value
     implicit class PathWrites(val path: JsPath) extends AnyVal {
@@ -264,26 +264,26 @@ private object GeoFormats {
   import ExtendedWrites._
 
   /**
-   * Reads the GeoJSON type property.
-   */
+    * Reads the GeoJSON type property.
+    */
   def readType: Reads[String] = (__ \ "type").read[String]
-  
-  /**
-   * Reads a GeoJSON type property with the given type.
-   *
-   * If the type is not the given name, a validation error is thrown.
-   */
-  def filterType(geoJsonType: String): Reads[String] =
-    readType.filter(ValidationError("Geometry is not a " + geoJsonType))(_ == geoJsonType)
 
   /**
-   * Writes for the GeoJSON type property for the given type.
-   */
+    * Reads a GeoJSON type property with the given type.
+    *
+    * If the type is not the given name, a validation error is thrown.
+    */
+  def filterType(geoJsonType: String): Reads[String] =
+    readType.filter(JsonValidationError("Geometry is not a " + geoJsonType))(_ == geoJsonType)
+
+  /**
+    * Writes for the GeoJSON type property for the given type.
+    */
   def writeType(geoJsonType: String): OWrites[Any] = (__ \ "type").pathWrite(geoJsonType)
 
   /**
-   * Format for the bbox property.
-   */
+    * Format for the bbox property.
+    */
   def formatBbox[C : Format]: OFormat[Option[(C, C)]] = (__ \ "bbox").formatNullable[(C, C)]
 
   implicit def crsBoxFormat[C](implicit cFormat: Format[C]): Format[(C, C)] = Format(
@@ -304,19 +304,19 @@ private object GeoFormats {
   )
 
   /**
-   * Create a GeoJSON format with the given type name.
-   */
+    * Create a GeoJSON format with the given type name.
+    */
   def geoJsonFormatFor[G](geoJsonType: String, format: OFormat[G]): Format[G] = Format[G](
     filterType(geoJsonType) ~> format,
     writeType(geoJsonType) ~~> format
   )
 
   /**
-   * Create a Geometry format with the given type name.
-   */
+    * Create a Geometry format with the given type name.
+    */
   def geometryFormatFor[G, T : Format, C : Format](geoJsonType: String,
-                                                  read: (T, Option[(C, C)]) => G,
-                                                  write: G => Option[(T, Option[(C, C)])]): Format[G] =
+                                                   read: (T, Option[(C, C)]) => G,
+                                                   write: G => Option[(T, Option[(C, C)])]): Format[G] =
     geoJsonFormatFor(geoJsonType,
       ((__ \ "coordinates").format[T] ~ formatBbox[C]).apply(read, unlift(write))
     )
@@ -324,8 +324,8 @@ private object GeoFormats {
   def errorReads[T](message: String) = Reads[T](_ => JsError(message))
 
   /**
-   * Reads is invariant in its type parameter.  This function widens it.
-   */
+    * Reads is invariant in its type parameter.  This function widens it.
+    */
   implicit def widenReads[A, B >: A](reads: Reads[A]): Reads[B] = Reads[B](_.validate(reads))
 
   /*
@@ -361,7 +361,7 @@ private object GeoFormats {
 
   def featureFormat[C : Format]: Format[Feature[C]] = {
     geoJsonFormatFor("Feature", (
-        (__ \ "geometry").format(geometryFormat[C]) ~
+      (__ \ "geometry").format(geometryFormat[C]) ~
         (__ \ "properties").formatNullable[JsObject] ~
         // The spec isn't clear on what the id can be
         (__ \ "id").formatNullable[JsValue] ~
@@ -417,7 +417,7 @@ private object GeoFormats {
 
   def writesWithCrs[C, G](writes: Writes[G])(implicit crs: CrsFormat[C]) = writes.transform { json =>
     if (crs.isDefault) {
-      json
+      json.asInstanceOf[JsValue]
     } else {
       json match {
         case obj: JsObject => obj ++ Json.obj("crs" -> crs.crs)

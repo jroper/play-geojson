@@ -19,7 +19,7 @@ Add the following dependency to `build.sbt`:
 
 ```scala
 resolvers += Resolver.bintrayRepo("jroper", "maven")
-"au.id.jazzy.play" %% "play-geojson" % "1.5.0"
+libraryDependencies += "au.id.jazzy.play" %% "play-geojson" % "1.5.0"
 ```
 
 ### 1.5.0 migration notes

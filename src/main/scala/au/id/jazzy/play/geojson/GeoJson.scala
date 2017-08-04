@@ -1,4 +1,4 @@
-package play.extras.geojson
+package au.id.jazzy.play.geojson
 
 import scala.collection.immutable.Seq
 import play.api.libs.json._

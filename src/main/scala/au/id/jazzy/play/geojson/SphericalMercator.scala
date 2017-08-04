@@ -1,4 +1,4 @@
-package play.extras.geojson
+package au.id.jazzy.play.geojson
 
 import play.api.libs.json._
 import scala.math._

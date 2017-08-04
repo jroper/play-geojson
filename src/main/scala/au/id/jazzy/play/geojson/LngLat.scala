@@ -1,10 +1,7 @@
-package play.extras.geojson
+package au.id.jazzy.play.geojson
 
 import scala.collection.immutable.Seq
 import play.api.libs.json._
-import play.api.libs.functional._
-import play.api.libs.functional.syntax._
-import play.extras.geojson._
 
 /**
  * LngLat is like LatLng except the ordering or latitude and longitude.

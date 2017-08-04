@@ -18,8 +18,15 @@ Since it is unofficial, don't expect any support, bug fixes or updates in any so
 Add the following dependency to `build.sbt`:
 
 ```scala
-"com.typesafe.play.extras" %% "play-geojson" % "1.4.0"
+resolvers += Resolver.bintrayRepo("jroper", "maven")
+"au.id.jazzy.play" %% "play-geojson" % "1.5.0"
 ```
+
+### 1.5.0 migration notes
+
+Starting version 1.5.0, `play-geojson` is now deployed to bintray rather than Maven central, the group id/organization has changed from `com.typesafe.play.extras` to `au.id.jazzy.play`, and the package name has changed from `play.extras.geojson` to `au.id.jazzy.play.geojson`. So be sure to add the bintray repo above to your build and migrate your code accordingly.
+
+The motivation behind this change is that this has never been (and probably will never be) an official Play library maintained by Lightbend, I have always maintained it in my spare time, and so the package name and organisation have been updated to reflect this, so as not to set incorrect expectations.
 
 ### Version compatibility Matrix
 
@@ -30,13 +37,14 @@ Add the following dependency to `build.sbt`:
 | 1.2.x                    | 2.3.x            |
 | 1.3.x                    | 2.4.x            |
 | 1.4.x                    | 2.5.x            |
+| 1.5.x                    | 2.6.x            |
 
 ## Usage instructions
 
 Import the types you need:
 
 ```scala
-import play.extras.geojson._
+import au.id.jazzy.play.geojson._
 ```
 
 Serialise a GeoJSON object to a JSON:

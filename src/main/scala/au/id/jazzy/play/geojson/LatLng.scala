@@ -1,9 +1,7 @@
-package play.extras.geojson
+package au.id.jazzy.play.geojson
 
 import scala.collection.immutable.Seq
 import play.api.libs.json._
-import play.api.libs.functional._
-import play.api.libs.functional.syntax._
 
 /**
  * A latitude longitude CRS, for use with WGS84 ( == EPSG:4326).

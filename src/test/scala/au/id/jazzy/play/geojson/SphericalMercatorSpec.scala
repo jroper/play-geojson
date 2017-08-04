@@ -1,8 +1,6 @@
-package play.extras.geojson
+package au.id.jazzy.play.geojson
 
-import scala.collection.immutable.Seq
 import org.specs2.mutable.Specification
-import play.api.libs.json._
 
 class SphericalMercatorSpec extends Specification {
 

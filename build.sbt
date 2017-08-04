@@ -1,4 +1,4 @@
-organization := "com.typesafe.play.extras"
+organization := "au.id.jazzy"
 name := "play-geojson"
 
 scalaVersion := "2.12.2"
@@ -12,7 +12,7 @@ libraryDependencies ++= Seq(
 resolvers += "Scalaz Bintray Repo" at "https://dl.bintray.com/scalaz/releases"
 
 homepage := Some(url("https://github.com/jroper/play-geojson"))
-licenses := Seq("Apache 2" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
+licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
 pomExtra := {
   <scm>
     <url>https://github.com/jroper/play-geojson</url>
@@ -29,23 +29,8 @@ pomExtra := {
 pomIncludeRepository := { _ => false }
 
 // Release settings
-sonatypeProfileName := "com.typesafe"
+bintrayRepository := "maven"
+bintrayPackage := "play-geojson"
 releasePublishArtifactsAction := PgpKeys.publishSigned.value
 releaseCrossBuild := true
 releaseTagName := (version in ThisBuild).value
-
-import ReleaseTransformations._
-releaseProcess := Seq[ReleaseStep](
-  checkSnapshotDependencies,
-  inquireVersions,
-  runTest, 
-  setReleaseVersion,
-  commitReleaseVersion,
-  tagRelease,
-  publishArtifacts,
-  releaseStepCommand("sonatypeRelease"),
-  setNextVersion,
-  commitNextVersion,
-  pushChanges
-)
-

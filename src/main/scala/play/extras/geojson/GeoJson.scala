@@ -4,7 +4,8 @@ import scala.collection.immutable.Seq
 import play.api.libs.json._
 import play.api.libs.functional._
 import play.api.libs.functional.syntax._
-import play.api.data.validation.ValidationError
+
+import scala.language.{higherKinds, implicitConversions}
 
 /**
  * A GeoJSON object.
@@ -250,12 +251,12 @@ private object GeoFormats {
     implicit class FunctionalBuilderWithContraOps[M[_] : ContravariantFunctor : FunctionalCanBuild, A](val ma: M[A]) {
       def ~~> [B <: A](mb: M[B]): M[B] = implicitly[ContravariantFunctor[M]].contramap(
         implicitly[FunctionalCanBuild[M]].apply(ma,mb)
-        , (b:B) => new play.api.libs.functional.~(b:A, b:B)
+        , (b:B) => play.api.libs.functional.~(b:A, b:B)
       )
 
       def <~~ [B >: A](mb: M[B]): M[A] = implicitly[ContravariantFunctor[M]].contramap(
         implicitly[FunctionalCanBuild[M]].apply(ma,mb),
-        (a:A) => new play.api.libs.functional.~(a:A, a:B)
+        (a:A) => play.api.libs.functional.~(a:A, a:B)
       )
     }
 
@@ -274,7 +275,7 @@ private object GeoFormats {
    * If the type is not the given name, a validation error is thrown.
    */
   def filterType(geoJsonType: String): Reads[String] =
-    readType.filter(ValidationError("Geometry is not a " + geoJsonType))(_ == geoJsonType)
+    readType.filter(JsonValidationError("Geometry is not a " + geoJsonType))(_ == geoJsonType)
 
   /**
    * Writes for the GeoJSON type property for the given type.

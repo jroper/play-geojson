@@ -31,6 +31,3 @@ pomIncludeRepository := { _ => false }
 // Release settings
 bintrayRepository := "maven"
 bintrayPackage := "play-geojson"
-releasePublishArtifactsAction := PgpKeys.publishSigned.value
-releaseCrossBuild := true
-releaseTagName := (version in ThisBuild).value

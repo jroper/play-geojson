@@ -1,7 +1,19 @@
-jdk: openjdk8
+dist: bionic
+jdk: openjdk11
 language: scala
-script: sbt +test
-
+sudo: false
+script: project/travis.sh
 branches:
   only:
-    - master
+  - master
+  - "/^v[0-9]/"
+cache:
+  directories:
+  - "$HOME/.ivy2/cache"
+before_cache:
+- rm -rf $HOME/.ivy2/cache/au.id.jazzy/*
+- find $HOME/.ivy2/cache -name "ivydata-*.properties" | xargs rm
+env:
+  global:
+  - secure: dl+g3hZPoq/ITxO7vPCJ15RfTg0+yW+6dsJEyRqBAYWQ6OFy5yPHUhiuoAADEwIdKbJhpBvWFHZViMMT/5ldCrTxN9A+ndkfUBAf1MWuWSDpR31W5VYEuocjI6iqdTdhlHWY2IB/yCScW06Bn7R7QeqFcs0r4SkpmieoKtG2ihk=
+  - secure: l67JMA58h28u7yPnVUMyGgo2/GeyzFmv8Ownk9svWzr/C0KPX6W86wgMqIrdg6VDa7kH9YmfURi6FbBqCfGyS9H9MEF5jdIg1J9+pjO3eidi2AqWLCFW2+T6QNOIGdzpXpBYwrLdRtdfc8oO1KUHb6dH+RTYRdaXNW4EhApQNq8=

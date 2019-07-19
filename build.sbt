@@ -1,12 +1,12 @@
 organization := "au.id.jazzy"
 name := "play-geojson"
 
-scalaVersion := "2.12.2"
-crossScalaVersions := Seq("2.11.11", "2.12.2")
+scalaVersion := "2.13.0"
+crossScalaVersions := Seq("2.11.12", "2.12.8", "2.13.0")
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play-json" % "2.6.0" % "provided",
-  "org.specs2" %% "specs2-core" % "3.9.2" %  "test"
+  "com.typesafe.play" %% "play-json" % "2.7.4" % "provided",
+  "org.specs2" %% "specs2-core" % "4.6.0" %  "test"
 )
 
 resolvers += "Scalaz Bintray Repo" at "https://dl.bintray.com/scalaz/releases"

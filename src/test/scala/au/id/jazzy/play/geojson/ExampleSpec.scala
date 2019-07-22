@@ -8,7 +8,7 @@ import play.api.libs.json._
  * examples from GeoJson Format specification
  * http://geojson.org/geojson-spec.html#appendix-a-geometry-examples
  */
-object ExampleSpec extends Specification {
+class ExampleSpec extends Specification {
 
   "GeoJson" should {
     def geoJsonAssertions[A <: GeoJson[LatLng] : Format](json: String, a: A) = {

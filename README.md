@@ -1,6 +1,6 @@
 # Play GeoJSON Library
 
-This library provides `Reads`/`Writes`/`Formats` for `play-json` for [GeoJSON](https://geojson.org/).
+This library provides [`play-json](https://github.com/playframework/play-json) `Reads`/`Writes`/`Formats` for [GeoJSON](https://geojson.org/).
 
 I don't actively maintain this project, but occassionally, if I have time, I do merge pull requests and cut releases. That said, it is a very simple project and many people have found it useful. There has been no need for a bug fix in four years, the code is stable and mature, the only changes have been upgrades of dependencies. If you are planning to use it in a production application, you will most likely have no problems with it, if you do have problems, you may find help here, but you should be prepared to fork the codebase (a little over 500 lines of code including comments) and maintain it yourself in the worst case.
 
@@ -75,7 +75,7 @@ val sydney = Json.fromJson[Feature[LatLng]](json)
 Implement a custom CRS:
 
 ```scala
-case class SphericalMercator(x: Int, y: Int)
+case class SphericalMercator(x: Double, y: Double)
 
 object SphericalMercator {
   implicit val format: Format[SphericalMercator] = SphericalMercatorCrs.format
@@ -85,7 +85,7 @@ object SphericalMercator {
 object SphericalMercatorCrs extends CrsFormat[SphericalMercator] {
   val crs = NamedCrs("urn:ogc:def:crs:EPSG::3857")
   val format = Format[SphericalMercator](
-    __.read[Seq[Int]].map {
+    __.read[Seq[Double]].map {
       case Seq(x, y) => SphericalMercator(x, y)
     }, Writes(m => Json.arr(m.x, m.y))
   )

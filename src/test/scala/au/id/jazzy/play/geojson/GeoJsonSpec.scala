@@ -4,7 +4,7 @@ import scala.collection.immutable.Seq
 import org.specs2.mutable.Specification
 import play.api.libs.json._
 
-object GeoJsonSpec extends Specification {
+class GeoJsonSpec extends Specification {
 
   case class SphericalMercator(x: Int, y: Int)
 

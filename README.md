@@ -1,6 +1,6 @@
 # Play GeoJSON Library
 
-This library provides [`play-json](https://github.com/playframework/play-json) `Reads`/`Writes`/`Formats` for [GeoJSON](https://geojson.org/).
+This library provides [`play-json`](https://github.com/playframework/play-json) `Reads`/`Writes`/`Formats` for [GeoJSON](https://geojson.org/).
 
 I don't actively maintain this project, but occassionally, if I have time, I do merge pull requests and cut releases. That said, it is a very simple project and many people have found it useful. There has been no need for a bug fix in four years, the code is stable and mature, the only changes have been upgrades of dependencies. If you are planning to use it in a production application, you will most likely have no problems with it, if you do have problems, you may find help here, but you should be prepared to fork the codebase (a little over 500 lines of code including comments) and maintain it yourself in the worst case.
 

@@ -1,8 +1,8 @@
 # Play GeoJSON Library
 
-This is an unofficial library that provides GeoJSON support to Play that you may find useful.
+This library provides `Reads`/`Writes`/`Formats` for `play-json` for [GeoJSON](https://geojson.org/).
 
-Since it is unofficial, don't expect any support, bug fixes or updates in any sort of timely manner.  Also don't expect any sort of backwards compatibility between releases.  But do expect to find comprehensive support for the GeoJSON spec using Play's JSON API.  This project may also be a useful tool to learning how to do some more complex things such as polymorphic structures in Play's JSON API.
+I don't actively maintain this project, but occassionally, if I have time, I do merge pull requests and cut releases. That said, it is a very simple project and many people have found it useful. There has been no need for a bug fix in four years, the code is stable and mature, the only changes have been upgrades of dependencies. If you are planning to use it in a production application, you will most likely have no problems with it, if you do have problems, you may find help here, but you should be prepared to fork the codebase (a little over 500 lines of code including comments) and maintain it yourself in the worst case.
 
 ## Features
 
@@ -19,7 +19,7 @@ Add the following dependency to `build.sbt`:
 
 ```scala
 resolvers += Resolver.bintrayRepo("jroper", "maven")
-libraryDependencies += "au.id.jazzy" %% "play-geojson" % "1.5.0"
+libraryDependencies += "au.id.jazzy" %% "play-geojson" % "1.6.0"
 ```
 
 ### 1.5.0 migration notes
@@ -30,14 +30,15 @@ The motivation behind this change is that this has never been (and probably will
 
 ### Version compatibility Matrix
 
-| **play-geojson version** | **Play version** |
-|--------------------------|------------------|
-| 1.0.x                    | 2.2.x            |
-| 1.1.x                    | 2.3.x            |
-| 1.2.x                    | 2.3.x            |
-| 1.3.x                    | 2.4.x            |
-| 1.4.x                    | 2.5.x            |
-| 1.5.x                    | 2.6.x            |
+| **play-geojson version** | **play-json version** |
+|--------------------------|-----------------------|
+| 1.0.x                    | 2.2.x                 |
+| 1.1.x                    | 2.3.x                 |
+| 1.2.x                    | 2.3.x                 |
+| 1.3.x                    | 2.4.x                 |
+| 1.4.x                    | 2.5.x                 |
+| 1.5.x                    | 2.6.x                 |
+| 1.6.x                    | 2.7.x                 |
 
 ## Usage instructions
 
@@ -90,3 +91,7 @@ object SphericalMercatorCrs extends CrsFormat[SphericalMercator] {
   )
 }
 ```
+
+## License
+
+This software is licensed under the Apache 2 license.

@@ -39,6 +39,7 @@ The motivation behind this change is that this has never been (and probably will
 | 1.4.x                    | 2.5.x                 |
 | 1.5.x                    | 2.6.x                 |
 | 1.6.x                    | 2.7.x                 |
+| 1.7.x                    | 2.8.x                 |
 
 ## Usage instructions
 

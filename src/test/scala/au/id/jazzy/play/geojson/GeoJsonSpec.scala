@@ -6,6 +6,12 @@ import play.api.libs.json._
 
 class GeoJsonSpec extends Specification {
 
+  import TestFormats._
+
+  implicit val sphericalMercatorPointFormat: Format[Point[SphericalMercator]] = GeoFormats.pointFormat
+  implicit val sphericalMercatorMultiPointFormat: Format[MultiPoint[SphericalMercator]] = GeoFormats.multiPointFormat
+  implicit val sphericalMercatorFeatureFormat: Format[Feature[SphericalMercator]] = GeoFormats.featureFormat
+
   case class SphericalMercator(x: Int, y: Int)
 
   object SphericalMercator {

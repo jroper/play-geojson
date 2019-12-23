@@ -10,6 +10,8 @@ import play.api.libs.json._
  */
 class ExampleSpec extends Specification {
 
+  import TestFormats._
+
   "GeoJson" should {
     def geoJsonAssertions[A <: GeoJson[LatLng] : Format](json: String, a: A) = {
       val js = Json.parse(json)

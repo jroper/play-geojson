@@ -33,6 +33,8 @@ sealed trait Geometry[C] extends GeoJson[C]
 object Geometry {
   implicit def geometryReads[C](implicit crs: CrsFormat[C]): Reads[Geometry[C]] =
     GeoFormats.geometryFormat(crs.format)
+  implicit def geometryWrites[C](implicit crs: CrsFormat[C]): Writes[Geometry[C]] =
+    GeoFormats.writesWithCrs(GeoFormats.geometryFormat[C](crs.format))
 }
 
 /**
@@ -47,6 +49,8 @@ case class Point[C](coordinates: C, bbox: Option[(C, C)] = None) extends Geometr
 object Point {
   implicit def pointReads[C](implicit crs: CrsFormat[C]): Reads[Point[C]] =
     GeoFormats.pointFormat(crs.format)
+  implicit def pointWrites[C](implicit crs: CrsFormat[C]): Writes[Point[C]] =
+    GeoFormats.writesWithCrs(GeoFormats.pointFormat[C](crs.format))
 }
 
 /**
@@ -61,6 +65,8 @@ case class MultiPoint[C](coordinates: Seq[C], bbox: Option[(C, C)] = None) exten
 object MultiPoint {
   implicit def multiPointReads[C](implicit crs: CrsFormat[C]): Reads[MultiPoint[C]] =
     GeoFormats.multiPointFormat(crs.format)
+  implicit def multiPointWrites[C](implicit crs: CrsFormat[C]): Writes[MultiPoint[C]] =
+    GeoFormats.writesWithCrs(GeoFormats.multiPointFormat[C](crs.format))
 }
 
 /**
@@ -75,6 +81,8 @@ case class LineString[C](coordinates: Seq[C], bbox: Option[(C, C)] = None) exten
 object LineString {
   implicit def lineStringReads[C](implicit crs: CrsFormat[C]): Reads[LineString[C]] =
     GeoFormats.lineStringFormat(crs.format)
+  implicit def lineStringWrites[C](implicit crs: CrsFormat[C]): Writes[LineString[C]] =
+    GeoFormats.writesWithCrs(GeoFormats.lineStringFormat[C](crs.format))
 }
 
 /**
@@ -89,6 +97,8 @@ case class MultiLineString[C](coordinates: Seq[Seq[C]], bbox: Option[(C, C)] = N
 object MultiLineString {
   implicit def multiLineStringReads[C](implicit crs: CrsFormat[C]): Reads[MultiLineString[C]] =
     GeoFormats.multiLineStringFormat(crs.format)
+  implicit def multiLineStringWrites[C](implicit crs: CrsFormat[C]): Writes[MultiLineString[C]] =
+    GeoFormats.writesWithCrs(GeoFormats.multiLineStringFormat[C](crs.format))
 }
 
 /**
@@ -103,6 +113,8 @@ case class Polygon[C](coordinates: Seq[Seq[C]], bbox: Option[(C, C)] = None) ext
 object Polygon {
   implicit def polygonReads[C](implicit crs: CrsFormat[C]): Reads[Polygon[C]] =
     GeoFormats.polygonFormat(crs.format)
+  implicit def polygonWrites[C](implicit crs: CrsFormat[C]): Writes[Polygon[C]] =
+    GeoFormats.writesWithCrs(GeoFormats.polygonFormat[C](crs.format))
 }
 
 /**
@@ -117,6 +129,8 @@ case class MultiPolygon[C](coordinates: Seq[Seq[Seq[C]]], bbox: Option[(C, C)] =
 object MultiPolygon {
   implicit def multiPolygonReads[C](implicit crs: CrsFormat[C]): Reads[MultiPolygon[C]] =
     GeoFormats.multiPolygonFormat(crs.format)
+  implicit def multiPolygonWrites[C](implicit crs: CrsFormat[C]): Writes[MultiPolygon[C]] =
+    GeoFormats.writesWithCrs(GeoFormats.multiPolygonFormat[C](crs.format))
 }
 
 /**
@@ -131,6 +145,8 @@ case class GeometryCollection[C](geometries: Seq[Geometry[C]], bbox: Option[(C, 
 object GeometryCollection {
   implicit def geometryCollectionReads[C](implicit crs: CrsFormat[C]): Reads[GeometryCollection[C]] =
     GeoFormats.geometryCollectionFormat(crs.format)
+  implicit def geometryCollectionWrites[C](implicit crs: CrsFormat[C]): Writes[GeometryCollection[C]] =
+    GeoFormats.writesWithCrs(GeoFormats.geometryCollectionFormat[C](crs.format))
 }
 
 /**
@@ -145,6 +161,8 @@ case class FeatureCollection[C](features: Seq[Feature[C]], bbox: Option[(C, C)] 
 object FeatureCollection {
   implicit def featureCollectionReads[C](implicit crs: CrsFormat[C]): Reads[FeatureCollection[C]] =
     GeoFormats.featureCollectionFormat(crs.format)
+  implicit def featureCollectionWrites[C](implicit crs: CrsFormat[C]): Writes[FeatureCollection[C]] =
+    GeoFormats.writesWithCrs(GeoFormats.featureCollectionFormat[C](crs.format))
 }
 
 /**
@@ -164,6 +182,8 @@ case class Feature[C](geometry: Geometry[C],
 object Feature {
   implicit def featureReads[C](implicit crs: CrsFormat[C]): Reads[Feature[C]] =
     GeoFormats.featureFormat(crs.format)
+  implicit def featureWrites[C](implicit crs: CrsFormat[C]): Writes[Feature[C]] =
+    GeoFormats.writesWithCrs(GeoFormats.featureFormat[C](crs.format))
 }
 
 /**
@@ -268,7 +288,7 @@ private object GeoFormats {
    * Reads the GeoJSON type property.
    */
   def readType: Reads[String] = (__ \ "type").read[String]
-  
+
   /**
    * Reads a GeoJSON type property with the given type.
    *
